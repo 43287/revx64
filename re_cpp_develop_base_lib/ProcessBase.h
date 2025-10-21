@@ -49,7 +49,7 @@ namespace Process
 			//collect
 			static BaseProcessInfo collectByName(const std::string& exeName);
 			static BaseProcessInfo collectByPid(DWORD pid);
-			static BaseProcessInfo collectByWindowName(std::string& className);
+			static BaseProcessInfo collectByWindowName(const std::string& className);
 		public:
 			ProcessBase& open(DWORD desiredAccess = PROCESS_ALL_ACCESS);
 
@@ -77,7 +77,7 @@ namespace Process
 	public:
 		static Process initByName(const std::string& exeName);
 		static Process initByPid(DWORD pid);
-		static Process initByWindowName(std::string& className);
+		static Process initByWindowName(const std::string& className);
 
 	public:
 		// 自定类型读写

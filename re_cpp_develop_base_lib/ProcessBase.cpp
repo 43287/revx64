@@ -39,7 +39,7 @@ namespace Process
 		return {.name = exeName, .pid = pid, .hProcess = nullptr };
 	}
 
-	BaseProcessInfo anonymous::ProcessBase::collectByWindowName(std::string& className)
+	BaseProcessInfo anonymous::ProcessBase::collectByWindowName(const std::string& className)
 	{
 		DWORD pid = utils::tltool::GetPidByClassNameA(className);
 		return collectByPid(pid);
@@ -109,7 +109,7 @@ namespace Process
 		return Process(d);
 	}
 
-	Process Process::initByWindowName(std::string& className)
+	Process Process::initByWindowName(const std::string& className)
 	{
 		auto d = ProcessBase::collectByWindowName(className);
 		return Process(d);
