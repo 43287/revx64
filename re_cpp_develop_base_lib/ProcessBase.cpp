@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+﻿﻿#include "pch.h"
 #include "ProcessBase.h"
 #include <winternl.h>
 #include <utility>
@@ -92,27 +92,8 @@ namespace Process
 		return true;
 	}
 
-
 	Process::Process(BaseProcessInfo info): ProcessBase(std::move(info))
 	{
-	}
-
-	Process Process::initByName(const std::string& exeName)
-	{
-		auto d = ProcessBase::collectByName(exeName);
-		return Process(d);
-	}
-
-	Process Process::initByPid(DWORD pid)
-	{
-		auto d = ProcessBase::collectByPid(pid);
-		return Process(d);
-	}
-
-	Process Process::initByWindowName(const std::string& className)
-	{
-		auto d = ProcessBase::collectByWindowName(className);
-		return Process(d);
 	}
 
 	BYTE Process::readByte(LPVOID addr)

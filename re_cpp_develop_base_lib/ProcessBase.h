@@ -64,9 +64,18 @@ namespace Process
 	}
 	class Process;
 
-	
-
-	
+	// 进程初始化辅助宏
+	#define DECLARE_PROCESS_INIT_METHODS(ClassName) \
+	public: \
+		static ClassName initByName(const std::string& exeName) { \
+			return ClassName(ProcessBase::collectByName(exeName)); \
+		} \
+		static ClassName initByPid(DWORD pid) { \
+			return ClassName(ProcessBase::collectByPid(pid)); \
+		} \
+		static ClassName initByWindowName(const std::string& className) { \
+			return ClassName(ProcessBase::collectByWindowName(className)); \
+		}
 
 
 	// 进程类，额外加入内存操作
@@ -74,10 +83,9 @@ namespace Process
 	{
 	private:
 		Process(BaseProcessInfo info);
+		
 	public:
-		static Process initByName(const std::string& exeName);
-		static Process initByPid(DWORD pid);
-		static Process initByWindowName(const std::string& className);
+		DECLARE_PROCESS_INIT_METHODS(Process)
 
 	public:
 		// 自定类型读写
