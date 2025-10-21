@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <windows.h>
 #include <vector>
@@ -8,10 +8,10 @@
 #include <type_traits>
 
 ///
-/// ¹¤¾ßÔÓÏî
+/// å·¥å…·æ‚é¡¹
 ///
-/// È¨ÏŞÌáÉı
-/// ×Ö·û´®²Ù×÷
+/// æƒé™æå‡
+/// å­—ç¬¦ä¸²æ“ä½œ
 
 
 
@@ -34,5 +34,10 @@ namespace utils
 
 	namespace privilege {
 
+	}
+
+	namespace windows
+	{
+		uintptr_t getLocalFuncInModule(std::string moduleName, std::string funcName);
 	}
 }

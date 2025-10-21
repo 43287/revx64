@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Utils.h"
 #include <tlhelp32.h>
 #include <algorithm>
@@ -83,4 +83,11 @@ DWORD utils::tltool::GetPidByClassNameA(const std::string& className)
     DWORD pid = 0;
     GetWindowThreadProcessId(hwnd, &pid);
     return pid;
+}
+
+uintptr_t utils::windows::getLocalFuncInModule(std::string moduleName, std::string funcName)
+{
+    HMODULE hModule = GetModuleHandleA(moduleName.c_str());
+    auto ret = GetProcAddress(hModule, funcName.c_str());
+    return reinterpret_cast<uintptr_t>(ret);
 }

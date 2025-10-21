@@ -1,28 +1,32 @@
-#pragma once
+ï»¿#pragma once
 #include <vector>
 
 
 namespace Memory
 {
-	// µ×²ã»ù±¾¶ÁĞ´·â×°
+	// åº•å±‚åŸºæœ¬è¯»å†™å°è£…
 	bool readRemoteMemory(HANDLE hProcess, LPCVOID remoteAddr, PVOID localBuffer, SIZE_T size, SIZE_T* outTransferred = nullptr);
 	bool writeRemoteMemory(HANDLE hProcess, LPVOID remoteAddr, PVOID localBuffer, SIZE_T size, SIZE_T* outTransferred = nullptr);
 
-	// ¶ÁĞ´·â×°£¬¶ÁĞ´Ò»¸öÀàĞÍ
+	// è¯»å†™å°è£…ï¼Œè¯»å†™ä¸€ä¸ªç±»å‹
 	template<typename T>
 	bool readRemote(HANDLE hProcess, LPCVOID remoteAddr, T& localBuffer);
 
 	template<typename T>
 	bool writeRemote(HANDLE hProcess, LPVOID remoteAddr, T& localBuffer);
 
-	// ¿çÒ³¶ÁĞ´£¬Ôİ²»ÊµÏÖ
+
+
+	///TODO:
+
+	// è·¨é¡µè¯»å†™ï¼Œæš‚ä¸å®ç°
 	bool readRemoteCrossPage();
 	bool writeRemoteCrossPage();
 
-	// ÄÚ´æÈ¨ÏŞ
+	// å†…å­˜æƒé™
 	bool memProtect(DWORD& savedAccess, DWORD desiredAccess);
 
-	// ÄÚ´æÉêÇë£¬È¨ÏŞĞŞ¸ÄµÈÄÚ´æ¹ÜÀí
+	// å†…å­˜ç”³è¯·ï¼Œæƒé™ä¿®æ”¹ç­‰å†…å­˜ç®¡ç†
 	class MemManager {
 		struct addressWithLength
 		{
@@ -30,9 +34,7 @@ namespace Memory
 			DWORD length;
 		};
 		std::vector<addressWithLength> addressOfAlloc = {};
-		// ÉêÇëÄÚ´æ
+		// ç”³è¯·å†…å­˜
 		uintptr_t alloc(size_t size, DWORD desiredAccess);
-
-		
 	};
 }

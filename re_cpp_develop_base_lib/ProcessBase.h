@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "pch.h"
 
 namespace Process
@@ -16,8 +16,8 @@ namespace Process
 	};
 	namespace anonymous
 	{
-		// ½ø³Ì»ùÀà
-		// ½öÊµÏÖ½ø³Ì»ù±¾ĞÅÏ¢µÄ¶ÁÈ¡ºÍ¾ä±ú±£´æºÍ´ò¿ª
+		// è¿›ç¨‹åŸºç±»
+		// ä»…å®ç°è¿›ç¨‹åŸºæœ¬ä¿¡æ¯çš„è¯»å–å’Œå¥æŸ„ä¿å­˜å’Œæ‰“å¼€
 		class ProcessBase
 		{
 		private://data
@@ -26,14 +26,14 @@ namespace Process
 				DWORD control;
 				struct
 				{
-					char padding : 24;
+					DWORD padding : 24;
 					Scode retCode : 7;
-					char isOpened : 1;
+					DWORD isOpened : 1;
 				};
 			};
 			DWORD pid;
-			std::string name;//Ö÷Ä£¿éÃû
-			HANDLE hProcess;//½ø³Ì¾ä±ú
+			std::string name;//ä¸»æ¨¡å—å
+			HANDLE hProcess;//è¿›ç¨‹å¥æŸ„
 
 		private://init
 			ProcessBase(
@@ -41,21 +41,11 @@ namespace Process
 				std::string_view exeName,
 				HANDLE hProcess = nullptr,
 				DWORD control = 0
-			) :
-				control(control),
-				pid(pid),
-				name(exeName),
-				hProcess(hProcess)
-			{
-			}
+			);
+		protected:
 			ProcessBase(BaseProcessInfo info) :control(0), pid(info.pid), name(info.name), hProcess(info.hProcess) {}
 			~ProcessBase();
 		public:
-			//init
-			//static ProcessBase initByName(std::string& exeName, bool isOpen = false);
-			//static ProcessBase initByPid(DWORD pid, bool isOpen = false);
-			//static ProcessBase initByWindowName(std::string& exeName, bool isOpen = false);
-
 			//collect
 			static BaseProcessInfo collectByName(const std::string& exeName);
 			static BaseProcessInfo collectByPid(DWORD pid);
@@ -79,7 +69,7 @@ namespace Process
 	
 
 
-	// ½ø³ÌÀà£¬¶îÍâ¼ÓÈëÄÚ´æ²Ù×÷
+	// è¿›ç¨‹ç±»ï¼Œé¢å¤–åŠ å…¥å†…å­˜æ“ä½œ
 	class Process :public anonymous::ProcessBase
 	{
 	private:
@@ -90,25 +80,31 @@ namespace Process
 		static Process initByWindowName(std::string& className);
 
 	public:
-		// ×Ô¶¨ÀàĞÍ¶ÁĞ´
+		// è‡ªå®šç±»å‹è¯»å†™
 		template<typename T>
 		bool read(LPCVOID addr, T& localBuffer);
 		template<typename T>
 		bool write(LPVOID addr, T& localBuffer);
 
-		// ¶Á
+		// è¯»
 		BYTE readByte(LPVOID addr);
 		WORD readWord(LPVOID addr);
 		DWORD readDword(LPVOID addr);
 		DWORD64 readQword(LPVOID addr);
 		std::vector<BYTE> readVector(LPVOID addr,size_t len);
 
-		// Ğ´
+		// å†™
 		void writeByte(LPVOID addr, BYTE data);
 		void writeWord(LPVOID addr, WORD data);
 		void writeDword(LPVOID addr, DWORD data);
 		void writeQword(LPVOID addr, DWORD64 data);
 		void writeVector(LPVOID addr, std::vector<BYTE>& data);
+
+
+	public:
+		uintptr_t getPEB();
+		uintptr_t getBase();
+
 	};
 
 }

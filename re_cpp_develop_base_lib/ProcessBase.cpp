@@ -1,11 +1,21 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ProcessBase.h"
+#include <winternl.h>
+#include <utility>
 #include "memory.h"
-#include "tlhelp32.h"
 #include "Utils.h"
 
 namespace Process
 {
+	anonymous::ProcessBase::ProcessBase(DWORD pid, std::string_view exeName, HANDLE hProcess, DWORD control)
+	:
+		control(control),
+		pid(pid),
+		name(exeName),
+		hProcess(hProcess)
+	{
+	}
+
 	anonymous::ProcessBase::~ProcessBase()
 	{
 		if (hProcess)
@@ -83,7 +93,7 @@ namespace Process
 	}
 
 
-	Process::Process(BaseProcessInfo info): ProcessBase(info)
+	Process::Process(BaseProcessInfo info): ProcessBase(std::move(info))
 	{
 	}
 
@@ -151,7 +161,7 @@ namespace Process
 		{
 			throw std::runtime_error("read failed");
 		}
-		// ´Ë´¦Î´´¦Àí³¤¶ÈÎÊÌâ
+		// æ­¤å¤„æœªå¤„ç†é•¿åº¦é—®é¢˜
 		return ret;
 	}
 
@@ -192,8 +202,30 @@ namespace Process
 		{
 			throw std::runtime_error("write failed");
 		}
-		// Î´´¦Àí·µ»Ø³¤¶È²»Í¬µÄÇé¿ö
+		// æœªå¤„ç†è¿”å›é•¿åº¦ä¸åŒçš„æƒ…å†µ
 	}
 
+	uintptr_t Process::getPEB()
+	{
+		typedef NTSTATUS(NTAPI* PFN_NtQueryInformationProcess)(
+			HANDLE ProcessHandle,
+			PROCESSINFOCLASS ProcessInformationClass,
+			PVOID ProcessInformation,
+			ULONG ProcessInformationLength,
+			PULONG ReturnLength
+			);
+		auto pNtQueryInformationProcess = reinterpret_cast<PFN_NtQueryInformationProcess>(utils::windows::getLocalFuncInModule("ntdll.dll", "NtQueryInformationProcess"));
+		if (!pNtQueryInformationProcess)return 0;
+		PROCESS_BASIC_INFORMATION pbi = { 0 };
+		NTSTATUS status = NtQueryInformationProcess(getHandle(), ProcessBasicInformation, &pbi, sizeof(pbi), nullptr);
+		if (status != 0)return 0;
+		return reinterpret_cast<uintptr_t>(pbi.PebBaseAddress);
+	}
 
+	uintptr_t Process::getBase()
+	{
+		auto ppeb = getPEB();
+		return readQword(reinterpret_cast<PVOID>(ppeb + 0x10));
+	}
 }
+

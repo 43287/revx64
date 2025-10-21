@@ -1,7 +1,7 @@
-#pragma once
+ï»¿#pragma once
 namespace RemoteControl
 {
-	// Ô¶³ÌPatch£¬ÆÕÍ¨µÄwrite¾Í¿ÉÒÔpatch£¬ÕâÀïµ¥¶À³ÉÀàÊÇÎªÁËÓĞ·½·¨±£´æpatchÇ°ºóµÄÄÚÈİ£¬·½±ã»Ö¸´
+	// è¿œç¨‹Patchï¼Œæ™®é€šçš„writeå°±å¯ä»¥patchï¼Œè¿™é‡Œå•ç‹¬æˆç±»æ˜¯ä¸ºäº†æœ‰æ–¹æ³•ä¿å­˜patchå‰åçš„å†…å®¹ï¼Œæ–¹ä¾¿æ¢å¤
 	
 	class remotePatch {
 
@@ -12,7 +12,7 @@ namespace RemoteControl
 			bool applied = false;
 		};
 		;
-		// patch,²¢×Ô¶¯±£´æµ½½á¹¹Ìå
+		// patch,å¹¶è‡ªåŠ¨ä¿å­˜åˆ°ç»“æ„ä½“
 		template<typename T>
 		static bool patch(HANDLE hProcess, uintptr_t addr, T& localBuffer);
 		static bool patchByte(HANDLE hProcess,uintptr_t addr, BYTE data);
@@ -33,7 +33,7 @@ namespace RemoteControl
 		};
 	};
 
-	// Ô¶³Ìhook£¬»ùÓÚpatchºÍmemory
+	// è¿œç¨‹hookï¼ŒåŸºäºpatchå’Œmemory
 	class remoteHook {
 		enum class hookMethod {
 			inlineHook,
@@ -41,7 +41,7 @@ namespace RemoteControl
 		};
 	};
 
-	// Ö÷¶¯µ÷ÓÃ
+	// ä¸»åŠ¨è°ƒç”¨
 	class remoteCall {
 		struct remoteCallArgs {
 			union
@@ -56,13 +56,13 @@ namespace RemoteControl
 			fastcall,
 			thiscall
 		};
-		// Ö÷¶¯´«Èë²ÎÊı×Ô¶¯¹¹Ôìshellcode²¢µ÷ÓÃ
+		// ä¸»åŠ¨ä¼ å…¥å‚æ•°è‡ªåŠ¨æ„é€ shellcodeå¹¶è°ƒç”¨
 		virtual remoteCallArgs makeCallx64(LPVOID targetAddr, std::vector<remoteCallArgs>& args);
 	};
 
 
 
-	// dll×¢ÈëÆ÷
+	// dllæ³¨å…¥å™¨
 	class injector {
 		enum class targetFunc {
 			loadLibrary,
@@ -88,11 +88,11 @@ namespace RemoteControl
 			yes
 		};
 
-		//×¢Èëshellcode²¢Ö´ĞĞ
+		//æ³¨å…¥shellcodeå¹¶æ‰§è¡Œ
 		virtual bool injectCode(HANDLE hProcess, PVOID localCode);
-		//×¢Èëdll²¢Ö´ĞĞ,·â×°ºóµÄinjectCode£¬Ö»Ö´ĞĞlocalCode£¬ĞèÒª×ÔÊµÏÖlocalCodeÌø×ªµ½localDLL
+		//æ³¨å…¥dllå¹¶æ‰§è¡Œ,å°è£…åçš„injectCodeï¼Œåªæ‰§è¡ŒlocalCodeï¼Œéœ€è¦è‡ªå®ç°localCodeè·³è½¬åˆ°localDLL
 		virtual bool injectDll(HANDLE hProcess,PVOID localCode, PVOID localDLL);
-		//×î¶¥²ãµÄdll×¢Èë
+		//æœ€é¡¶å±‚çš„dllæ³¨å…¥
 		virtual bool injectDll(HANDLE hProcess, PVOID localDLL, targetFunc tf, openProcessMethod opm, injectMethod im, kernelMode km = kernelMode::no);
 	};
 };

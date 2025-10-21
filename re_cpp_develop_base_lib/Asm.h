@@ -1,6 +1,6 @@
-#pragma once
+﻿#pragma once
 /// <summary>
-/// �ÿռ�����ʵ���ַ��������ָ���ֽ�����໥ת���Լ��޸��ֽ������Ϊ
+/// 该空间用来实现字符串到汇编指令字节码的相互转换以及修改字节码等行为
 /// </summary>
 namespace Asm
 {
