@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "pch.h"
-
+#include "Memory.h"
 namespace Process
 {
 	// retCode
@@ -81,8 +81,10 @@ namespace Process
 	// 进程类，额外加入内存操作
 	class Process :public anonymous::ProcessBase
 	{
-	private:
-		Process(BaseProcessInfo info);
+	protected:
+		// 使用完美转发处理构造函数参数
+		template<typename T>
+		Process(T&& info) : ProcessBase(std::forward<T>(info)) {}
 		
 	public:
 		DECLARE_PROCESS_INIT_METHODS(Process)
@@ -90,10 +92,35 @@ namespace Process
 	public:
 		// 自定类型读写
 		template<typename T>
-		bool read(LPCVOID addr, T& localBuffer);
-		template<typename T>
-		bool write(LPVOID addr, T& localBuffer);
+		bool read(LPCVOID addr, T& localBuffer)
+		{
+			Memory::readRemote(getHandle(), addr, localBuffer);
+			return true;
+		}
 
+		template<typename T>
+		bool write(LPVOID addr, T& localBuffer)
+		{
+			Memory::writeRemote(getHandle(), addr, localBuffer);
+			return true;
+		}
+
+		template<typename T>
+		bool readStructByPtr(LPCVOID addrOfPtr, T& localBuffer)
+		{
+			PVOID ptr;
+			T tmp;
+			if(!read<PVOID>(addrOfPtr, ptr))
+			{
+				throw std::runtime_error("readPtr failed");
+			}
+			if (!read<T>(ptr,tmp))
+			{
+				throw std::runtime_error("read struct failed");
+			}
+			localBuffer = tmp;
+			return true;
+		}
 		// 读
 		BYTE readByte(LPVOID addr);
 		WORD readWord(LPVOID addr);

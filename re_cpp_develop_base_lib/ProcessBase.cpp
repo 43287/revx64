@@ -1,4 +1,4 @@
-﻿﻿#include "pch.h"
+﻿#include "pch.h"
 #include "ProcessBase.h"
 #include <winternl.h>
 #include <utility>
@@ -78,23 +78,8 @@ namespace Process
 	}
 
 
-	template <typename T>
-	bool Process::read(LPCVOID addr, T& localBuffer)
-	{
-		Memory::readRemote(getHandle(), addr, localBuffer);
-		return true;
-	}
 
-	template <typename T>
-	bool Process::write(LPVOID addr, T& localBuffer)
-	{
-		Memory::writeRemote(getHandle(), addr, localBuffer);
-		return true;
-	}
 
-	Process::Process(BaseProcessInfo info): ProcessBase(std::move(info))
-	{
-	}
 
 	BYTE Process::readByte(LPVOID addr)
 	{
@@ -198,7 +183,7 @@ namespace Process
 		auto pNtQueryInformationProcess = reinterpret_cast<PFN_NtQueryInformationProcess>(utils::windows::getLocalFuncInModule("ntdll.dll", "NtQueryInformationProcess"));
 		if (!pNtQueryInformationProcess)return 0;
 		PROCESS_BASIC_INFORMATION pbi = { 0 };
-		NTSTATUS status = NtQueryInformationProcess(getHandle(), ProcessBasicInformation, &pbi, sizeof(pbi), nullptr);
+		NTSTATUS status = pNtQueryInformationProcess(getHandle(), ProcessBasicInformation, &pbi, sizeof(pbi), nullptr);
 		if (status != 0)return 0;
 		return reinterpret_cast<uintptr_t>(pbi.PebBaseAddress);
 	}

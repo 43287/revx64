@@ -27,7 +27,7 @@ namespace Memory
 		MEMORY_BASIC_INFORMATION mbiEnd;
 		size_t q2 = VirtualQueryEx(hProcess, endAddr, &mbiEnd, sizeof(mbiEnd));
 		if (!q2|| 
-			mbiStart.BaseAddress != mbiEnd.BaseAddress|| 
+			//mbiStart.BaseAddress != mbiEnd.BaseAddress|| //将跨页条件暂时取消
 			mbiStart.Protect & PAGE_NOACCESS || 
 			mbiStart.Protect & PAGE_GUARD)
 		{
@@ -103,30 +103,5 @@ namespace Memory
 	}
 
 
-	template <typename T>
-	bool readRemote(HANDLE hProcess, LPCVOID remoteAddr, T& localBuffer)
-	{
-		static_assert(std::is_trivially_copyable_v<T>,"类型直接读取仅针对于平凡可拷贝类型");
-		T tmp;
-		size_t szRead;
-		if (!readRemoteMemory(hProcess, remoteAddr,&tmp , sizeof(T), &szRead))
-		{
-			return false;
-		}
-		localBuffer = tmp;
-		return true;
-	}
 
-	template <typename T>
-	bool writeRemote(HANDLE hProcess, LPVOID remoteAddr, T& localBuffer)
-	{
-		static_assert(std::is_trivially_copyable_v<T>, "类型直接写入仅针对于平凡可拷贝类型");
-		T tmp = localBuffer;
-		size_t szWrite;
-		if (!writeRemoteMemory(hProcess,remoteAddr,tmp,sizeof(T),&szWrite))
-		{
-			return false;
-		}
-		return true;
-	}
 }
