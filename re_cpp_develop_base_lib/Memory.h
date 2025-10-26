@@ -44,6 +44,13 @@ namespace Memory
 	bool readRemoteCrossPage();
 	bool writeRemoteCrossPage();
 
+	// 内存扫描
+	uintptr_t scanfRemoteMemory(HANDLE hProcess, std::string byteCode);
+
+
+
+
+
 	// 内存权限
 	bool memProtect(DWORD& savedAccess, DWORD desiredAccess);
 
